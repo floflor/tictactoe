@@ -1,0 +1,41 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon --exec ts-node src/index.ts",
+    "build": "tsc",
+    "db:migration:run": "npx typeorm-ts-node-esm migration:run  -d config/ormconfig.ts",
+    "db:migration:generate": "npx typeorm-ts-node-esm migration:generate migrations/$npm_config_migration_name -d config/ormconfig.ts",
+    "db:migration:revert": "npx typeorm-ts-node-esm migration:revert -d config/ormconfig.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.3",
+    "@types/express": "^4.17.16",
+    "@types/http-errors": "^2.0.1",
+    "@types/morgan": "^1.9.4",
+    "@types/node": "^18.11.18",
+    "nodemon": "^2.0.20",
+    "ts-node": "^10.9.1"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "http-errors": "^2.0.0",
+    "morgan": "^1.10.0",
+    "path": "^0.12.7",
+    "pg": "^8.9.0",
+    "reflect-metadata": "^0.1.13",
+    "socket-controllers": "^0.1.1",
+    "socket.io": "^4.5.4",
+    "typeorm": "^0.3.11",
+    "typescript": "^4.9.4"
+  }
+}
