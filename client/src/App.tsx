@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
 import Landing from "./pages/Landing/Landing";
 import Game from "./pages/Game/Game";
-import { Socket, io } from "socket.io-client";
+import { Socket } from "socket.io-client";
 
 function App({ socket }: { socket: Socket }) {
   const [socketInstance, setSocket] = useState<any>(null);
@@ -21,7 +21,7 @@ function App({ socket }: { socket: Socket }) {
   return (
     <Router>
       <div className="App">
-        {socket ? (
+        {socketInstance ? (
           <Routes>
             <Route path="/" element={<Landing socket={socketInstance} />} />
             <Route

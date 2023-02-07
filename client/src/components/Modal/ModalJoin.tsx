@@ -2,7 +2,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Socket } from "socket.io-client";
-import { Button, ModalContainer } from "../styled-elements";
+import {
+  Button,
+  FlexContainer,
+  Form,
+  Heading,
+  Input,
+  ModalContainer,
+} from "../styled-elements";
 
 const ModalJoinGame = ({
   socket,
@@ -19,17 +26,17 @@ const ModalJoinGame = ({
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleUserNameChange = (e: any) => {
+  const handleUserNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setUserName(e.target.value);
   };
 
-  const handleGameIdChange = (e: any) => {
+  const handleGameIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setGameId(e.target.value);
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     socket.emit("join-game", gameId, userName);
     socket.on("player-joined", (_, userId) => {
@@ -39,6 +46,7 @@ const ModalJoinGame = ({
 
   useEffect(() => {
     socket.on("error", (args) => {
+      console.log(error)
       setError(args);
     });
   }, [error]);
@@ -49,23 +57,41 @@ const ModalJoinGame = ({
     if (gameId && playerId) {
       navigate(`/game/${gameId}`);
     }
-  }, [error, playerId]);
+  }, [playerId]);
 
   return (
     <ModalContainer>
-      <h1>Please enter your name</h1>
-      <form onSubmit={(e) => handleSubmit(e)}>
-        <input onChange={(e) => handleGameIdChange(e)} type="text" />
-        <input onChange={(e) => handleUserNameChange(e)} type="text" />
-        <Button type="submit">Join Game</Button>
-        <button
-          onClick={(e) => {
-            onClose({ ...child, join: !child.join });
-          }}
+      <Heading fontSize="2.5em" color="#000000">
+        Please enter your name and game ID
+      </Heading>
+      <Form onSubmit={(e) => handleSubmit(e)}>
+        <Input
+          margin="0"
+          placeholder="Game ID"
+          onChange={(e) => handleGameIdChange(e)}
+          type="number"
+        />
+        <Input
+          placeholder="User Name"
+          onChange={(e) => handleUserNameChange(e)}
+          type="text"
+        />
+        <FlexContainer
+          flexDirection="row"
+          justifyContent="space-between"
+          width="50%"
+          margin="2%"
         >
-          Close
-        </button>
-      </form>
+          <Button type="submit">Join Game</Button>
+          <Button
+            onClick={(e) => {
+              onClose({ ...child, join: !child.join });
+            }}
+          >
+            Close
+          </Button>
+        </FlexContainer>
+      </Form>
       {error && <div>{error}</div>}
     </ModalContainer>
   );

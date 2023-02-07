@@ -8,6 +8,11 @@ export const FlexContainer = styled.div<ContainerProps>((props) => ({
   ...(props.justifyContent && {
     justifyContent: props.justifyContent || "center",
   }),
+  ...(props.justifySelf && {
+    justifySelf: props.justifySelf || "center",
+  }),
+  ...(props.margin && { margin: props.margin }),
+  ...(props.alignSelf && { alignSelf: props.alignSelf }),
   alignItems: props.alignItems || "center",
   flexDirection: props.flexDirection || "column",
   backgroundColor: props.backgroundColor || "transparent",
@@ -67,8 +72,57 @@ export const Button = styled.button((props) => ({
 
 export const Form = styled.form((props) => ({
   width: "100%",
-
+  alignItems: "center",
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
+}));
+
+export const GridLayer = styled.div((props) => ({
+  width: "100%",
+  height: "100vh",
+  display: "grid",
+  gridTemplateColumns: "repeat(3, 1fr)",
+  gridTemplateRows: "1fr",
+}));
+
+export const BoardContainer = styled.div((props) => ({
+  width: "100%",
+  height: "100%",
+  gridArea: "1 / 1 / 2 / 3",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundColor: "black",
+}));
+
+export const LogsContainer = styled.div((props) => ({
+  width: "100%",
+  height: "100%",
+  gridArea: "1 / 3 / 2 / 4",
+  backgroundColor: "white",
+}));
+
+export const BoardTable = styled.div((props) => ({
+  width: "60%",
+  height: "60%",
+  display: "grid",
+  gridTemplateColumns: "repeat(3, 1fr)",
+  gridTemplateRows: "repeat(3, 1fr)",
+  columnGap: "5px",
+  rowGap: "5px",
+}));
+
+export const Input = styled.input<ContainerProps>((props) => ({
+  fontFamily: "inherit",
+  width: "50%",
+  border: "0",
+  borderBottom: "2px solid black",
+  outline: "0",
+  fontSize: "1.3rem",
+  color: "black",
+  padding: "7px 0",
+  background: "transparent",
+  margin: props.margin || '5%'
 }));

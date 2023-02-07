@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Socket } from "socket.io-client";
 import { checkIfSamePlayer, checkIfjustOneMove } from "../../helpers";
+import { UpdatedBoard } from "../../types";
 
 const BoardCellContainer = styled.div((props) => ({
   width: "100%",
@@ -20,13 +21,13 @@ const BoardCell = ({
   children,
 }: {
   socket: Socket;
-  state: { position: number; player: number | null }[];
+  state: UpdatedBoard;
   gameId: number;
   playerId: number;
   iKey: number;
   children: any;
 }) => {
-  const handleClick = (e: any, key: number) => {
+  const handleClick = (e: React.MouseEvent, key: number) => {
     e.preventDefault();
     if (checkIfjustOneMove(state) && checkIfSamePlayer(state, playerId)) {
       socket.emit("join-local", gameId);

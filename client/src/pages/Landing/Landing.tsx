@@ -12,7 +12,7 @@ const Landing = ({ socket }: { socket: Socket }) => {
   console.log(socket);
   const [modal, setModal] = useState({ start: false, join: false });
 
-  const handleOpenModal = (event: any, modalType: string) => {
+  const handleOpenModal = (event: React.MouseEvent, modalType: string) => {
     event.preventDefault();
     if (modalType === "start") {
       setModal({ ...modal, start: true });

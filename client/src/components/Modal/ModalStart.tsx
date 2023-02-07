@@ -2,14 +2,21 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Socket } from "socket.io-client";
-import { Button, Form, Heading, ModalContainer } from "../styled-elements";
+import {
+  Button,
+  FlexContainer,
+  Form,
+  Heading,
+  Input,
+  ModalContainer,
+} from "../styled-elements";
 
 const ModalStartGame = ({
   socket,
   child,
   onClose,
 }: {
-  socket: Socket ;
+  socket: Socket;
   child: any;
   onClose: any;
 }) => {
@@ -19,13 +26,13 @@ const ModalStartGame = ({
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleUserNameChange = (e: any) => {
+  const handleUserNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     setUserName(e.target.value);
   };
 
-  const handleSubmit = (e: any) => {
-    console.log(socket)
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    console.log(socket);
     e.preventDefault();
     socket.emit("start-game", userName);
     socket.on("game-started", (gameId, userId) => {
@@ -53,19 +60,25 @@ const ModalStartGame = ({
         Please enter your name
       </Heading>
       <Form onSubmit={(e) => handleSubmit(e)}>
-        <input placeholder="Player Name" onChange={(e) => handleUserNameChange(e)} type="text" />
-        <Button type="submit">Start Game</Button>
-        <button
-          onClick={(e) => {
-            try {
-              onClose({ ...child, start: !child.start });
-            } catch (e) {
-              console.log(e);
-            }
-          }}
-        >
-          Close
-        </button>
+        <Input
+          placeholder="Player Name"
+          onChange={(e) => handleUserNameChange(e)}
+          type="text"
+        />
+        <FlexContainer flexDirection="row" justifyContent="space-between" width="50%" margin="5%">
+          <Button type="submit">Start Game</Button>
+          <Button
+            onClick={(e) => {
+              try {
+                onClose({ ...child, start: !child.start });
+              } catch (e) {
+                console.log(e);
+              }
+            }}
+          >
+            Close
+          </Button>
+        </FlexContainer>
       </Form>
       {error && <div>{error}</div>}
     </ModalContainer>

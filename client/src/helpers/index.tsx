@@ -1,6 +1,13 @@
+import {
+  BoardType,
+  InitialBoard,
+  UpdatedBoard,
+  UpdatedBoardCells,
+} from "../types";
+
 export const updateBoard = (
-  currentState: { position: number; player: number | null }[],
-  updatedBoard: { position: number; player: number }[]
+  currentState: UpdatedBoard,
+  updatedBoard: BoardType
 ) => {
   const updatedState = currentState.map((position) => {
     const matchedBoard = updatedBoard.find(
@@ -12,15 +19,15 @@ export const updateBoard = (
   return updatedState;
 };
 
-export const generateInitialBoard = () => {
+export const generateInitialBoard = (): InitialBoard => {
   return Array.from({ length: 9 }, (_: any, i: number) => {
-    return { position: i + 1, player: null };
-  }) as { position: number; player: null | number }[];
+    return { position: i + 1, player: null, symbol: null };
+  });
 };
 
-export const checkIfjustOneMove = (board: any) => {
+export const checkIfjustOneMove = (board: UpdatedBoard) => {
   let times = 0;
-  board.map((item: any) => {
+  board.map((item: UpdatedBoardCells) => {
     if (item.player) {
       return (times += 1);
     }
@@ -30,7 +37,7 @@ export const checkIfjustOneMove = (board: any) => {
   return times === 1 ? true : false;
 };
 
-export const checkIfSamePlayer = (board: any, playerId: number) => {
-  const match = board.find((item: any) => item.player === playerId);
+export const checkIfSamePlayer = (board: UpdatedBoard, playerId: number) => {
+  const match = board.find((item: UpdatedBoardCells) => item.player === playerId);
   return match ? true : false;
 };

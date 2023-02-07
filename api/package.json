@@ -8,7 +8,7 @@
     "dev": "nodemon --exec ts-node src/index.ts",
     "build": "tsc",
     "db:migration:run": "npx typeorm-ts-node-esm migration:run  -d config/ormconfig.ts",
-    "db:migration:generate": "npx typeorm-ts-node-esm migration:generate migrations/$npm_config_migration_name -d config/ormconfig.ts",
+    "db:migration:generate": "npx typeorm-ts-node-esm migration:generate migrations/migration -d config/ormconfig.ts",
     "db:migration:revert": "npx typeorm-ts-node-esm migration:revert -d config/ormconfig.ts"
   },
   "keywords": [],

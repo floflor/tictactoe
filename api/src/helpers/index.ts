@@ -15,24 +15,16 @@ export const checkLastMove = (board: Board[], symbol: string) => {
 
 export const isGameFinished = (board: Board[]) => {
   const positions = board.reduce((acc, move) => {
-    acc[move.position] = move.local ? "local" : move.player;
+    acc[move.position] = move.player;
     return acc;
   }, {} as { [key: number]: number | string });
 
-  return WINNING_CONDITIONS.some(
-    ([a, b, c]) =>
-      positions[a] &&
-      positions[a] === positions[b] &&
-      positions[a] === positions[c]
-  ) || board.length === 9;
-};
-
-export const checkIfLocal = (board: Board[], player: number) => {
-  const moves = board.length;
-  const boardLocal = board.find((b) => b.local);
-  if (moves === 1 && player === board[0].player) {
-    return true;
-  }
-  if (boardLocal) return true;
-  return false;
+  return (
+    WINNING_CONDITIONS.some(
+      ([a, b, c]) =>
+        positions[a] &&
+        positions[a] === positions[b] &&
+        positions[a] === positions[c]
+    ) || board.length === 9
+  );
 };

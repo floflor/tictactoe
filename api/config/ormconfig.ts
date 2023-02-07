@@ -13,7 +13,7 @@ const connectDB = new DataSource({
   logging: false,
   synchronize: false,
   entities: ["./src/entities/**/*.ts"],
-  migrations: ['./migrations/*.ts'],
+  migrations: ['./migrations/**/*.ts'],
 });
 
 connectDB

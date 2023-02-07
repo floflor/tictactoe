@@ -1,12 +1,7 @@
 import { Server, Socket } from "socket.io";
 import Game from "../entities/GameEntity";
 import User from "../entities/UserEntity";
-import {
-  checkIfLocal,
-  checkLastMove,
-  checkPosition,
-  isGameFinished,
-} from "../helpers";
+import { checkLastMove, checkPosition, isGameFinished } from "../helpers";
 
 export default (io: Server, socket: Socket) => {
   const startGame = async (playerName: string) => {
@@ -34,7 +29,7 @@ export default (io: Server, socket: Socket) => {
     user.save();
 
     socket.join(gameId.toString());
-    console.log(`Connected to rooms: ${Object.keys(socket.rooms)}`);
+    console.log(`Connected to rooms: ${gameId}`);
     socket.emit("game-started", gameId, userId);
   };
 
@@ -50,7 +45,7 @@ export default (io: Server, socket: Socket) => {
     }
 
     const user = new User();
-    user.name = 'local'
+    user.name = "local";
     user.game = gameId;
     user.symbol = "O";
     await user.save();
@@ -62,10 +57,20 @@ export default (io: Server, socket: Socket) => {
     io.to(gameId.toString()).emit("local-player-joined", gameId, user.id);
   };
 
-
   const joinGame = async (gameId: number, playerName: string) => {
+    if (!gameId) {
+      return socket.emit(
+        "error",
+        "You need to provide a game ID before starting"
+      );
+    }
+    if (!playerName) {
+      return socket.emit(
+        "error",
+        "You need to provide a user name before starting"
+      );
+    }
     const game = await Game.findOne({ where: { id: gameId } });
-
     if (!game) {
       return socket.emit("error", "Game not found");
     }
@@ -121,7 +126,7 @@ export default (io: Server, socket: Socket) => {
       return io.to(gameId.toString()).emit("game-finished", player);
     }
 
-    game.board.push({ position, player, symbol: user.symbol, local: false });
+    game.board.push({ position, player, symbol: user.symbol });
     await Game.save(game);
 
     io.to(gameId.toString()).emit("move-made", game.board);
@@ -152,5 +157,5 @@ export default (io: Server, socket: Socket) => {
   socket.on("join-game", joinGame);
   socket.on("make-move", makeMove);
   socket.on("get-board", getBoard);
-  socket.on("join-local", joinLocalGame)
+  socket.on("join-local", joinLocalGame);
 };
