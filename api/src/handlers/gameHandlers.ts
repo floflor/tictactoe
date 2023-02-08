@@ -134,9 +134,13 @@ export default (io: Server, socket: Socket) => {
     const gameFinished = isGameFinished(game.board);
 
     if (gameFinished) {
+      let winner; 
+      if (game.board.length !== 9){
+        winner = user.name
+      }
       game.finished = true;
       await Game.save(game);
-      return io.to(gameId.toString()).emit("game-finished", player);
+      return io.to(gameId.toString()).emit("game-finished", winner || 'No more moves');
     }
   };
 
@@ -153,9 +157,18 @@ export default (io: Server, socket: Socket) => {
     socket.emit("game-board", game.board);
   };
 
+  const getGameStatus = async (gameId: number) => {
+    const game = await Game.findOne({ where: { id: gameId } });
+    if (!game) {
+      return socket.emit("error", "Game not found");
+    }
+    socket.emit("game-info", game.finished);
+  };
+
   socket.on("start-game", startGame);
   socket.on("join-game", joinGame);
   socket.on("make-move", makeMove);
   socket.on("get-board", getBoard);
   socket.on("join-local", joinLocalGame);
+  socket.on("game-status", getGameStatus);
 };

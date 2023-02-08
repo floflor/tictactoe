@@ -19,6 +19,8 @@ export interface ContainerProps {
   margin?: string;
   alignSelf?: string;
   justifySelf?:string;
+  border?: string
+  borderRadius?: string
 }
 export interface HeadingProps {
   fontSize?: string;

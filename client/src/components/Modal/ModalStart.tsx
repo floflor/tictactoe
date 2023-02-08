@@ -32,7 +32,6 @@ const ModalStartGame = ({
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    console.log(socket);
     e.preventDefault();
     socket.emit("start-game", userName);
     socket.on("game-started", (gameId, userId) => {
@@ -65,15 +64,16 @@ const ModalStartGame = ({
           onChange={(e) => handleUserNameChange(e)}
           type="text"
         />
-        <FlexContainer flexDirection="row" justifyContent="space-between" width="50%" margin="5%">
+        <FlexContainer
+          flexDirection="row"
+          justifyContent="space-between"
+          width="50%"
+          margin="5%"
+        >
           <Button type="submit">Start Game</Button>
           <Button
             onClick={(e) => {
-              try {
-                onClose({ ...child, start: !child.start });
-              } catch (e) {
-                console.log(e);
-              }
+              onClose({ ...child, start: !child.start });
             }}
           >
             Close

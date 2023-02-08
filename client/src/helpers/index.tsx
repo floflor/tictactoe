@@ -25,7 +25,7 @@ export const generateInitialBoard = (): InitialBoard => {
   });
 };
 
-export const checkIfjustOneMove = (board: UpdatedBoard) => {
+export const checkIfjustOneMove = (board: any) => {
   let times = 0;
   board.map((item: UpdatedBoardCells) => {
     if (item.player) {
@@ -37,7 +37,7 @@ export const checkIfjustOneMove = (board: UpdatedBoard) => {
   return times === 1 ? true : false;
 };
 
-export const checkIfSamePlayer = (board: UpdatedBoard, playerId: number) => {
+export const checkIfSamePlayer = (board: any, playerId: number) => {
   const match = board.find((item: UpdatedBoardCells) => item.player === playerId);
   return match ? true : false;
 };

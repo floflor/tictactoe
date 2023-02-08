@@ -6,10 +6,13 @@ export const FlexContainer = styled.div<ContainerProps>((props) => ({
   ...(props.heigth && { height: props.heigth }),
   ...(props.minHeight && { minHeight: props.minHeight }),
   ...(props.justifyContent && {
-    justifyContent: props.justifyContent || "center",
+    justifyContent: props.justifyContent,
   }),
   ...(props.justifySelf && {
-    justifySelf: props.justifySelf || "center",
+    justifySelf: props.justifySelf,
+  }),
+  ...(props.border && {
+    border: props.border,
   }),
   ...(props.margin && { margin: props.margin }),
   ...(props.alignSelf && { alignSelf: props.alignSelf }),
@@ -18,6 +21,7 @@ export const FlexContainer = styled.div<ContainerProps>((props) => ({
   backgroundColor: props.backgroundColor || "transparent",
   display: "flex",
   color: props.color,
+  borderRadius: props.borderRadius || '0',
 }));
 
 export const ModalContainer = styled.div((props) => ({
@@ -37,6 +41,10 @@ export const ModalContainer = styled.div((props) => ({
 
 export const Heading = styled.h1<HeadingProps>((props) => ({
   fontSize: props.fontSize || "8em",
+  color: props.color || "#FFFFFF",
+}));
+export const Text= styled.p<HeadingProps>((props) => ({
+  fontSize: props.fontSize || "2em",
   color: props.color || "#FFFFFF",
 }));
 
@@ -106,7 +114,7 @@ export const LogsContainer = styled.div((props) => ({
 
 export const BoardTable = styled.div((props) => ({
   width: "60%",
-  height: "60%",
+  minHeight: "60%",
   display: "grid",
   gridTemplateColumns: "repeat(3, 1fr)",
   gridTemplateRows: "repeat(3, 1fr)",
@@ -124,5 +132,11 @@ export const Input = styled.input<ContainerProps>((props) => ({
   color: "black",
   padding: "7px 0",
   background: "transparent",
-  margin: props.margin || '5%'
+  margin: props.margin || "5%",
+}));
+
+export const Line = styled.div<ContainerProps>((props) => ({
+  width: props.width || "100%",
+  height: "0",
+  border: "1px solid black",
 }));

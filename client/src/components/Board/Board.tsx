@@ -9,14 +9,11 @@ import { BoardType, UpdatedBoard, UpdatedBoardCells } from "../../types";
 import BoardCell from "../BoardCell/BoardCell";
 import { BoardTable } from "../styled-elements";
 
-
-
 const Board = ({ socket }: { socket: Socket }) => {
   const [board, setBoard] = useState<UpdatedBoard>([]);
   const { id } = useParams();
   const gameId = parseInt(id as string);
   const [playerId, setPlayerId] = useState<number>();
-  const [error, setError] = useState("");
   const [localId, setLocalId] = useState<number>();
   const [lastMove, setLastMove] = useState("");
 
@@ -38,25 +35,20 @@ const Board = ({ socket }: { socket: Socket }) => {
     } catch (err) {
       console.log(err);
     }
-  }, [lastMove]);
+  }, []);
   useEffect(() => {
     socket.on("local-player-joined", (_, playerId) => {
       localStorage.setItem("localId", playerId);
+      setLocalId(playerId);
     });
-  }, []);
+  }, [localId]);
 
   useEffect(() => {
     const player = localStorage.getItem("playerId");
+    console.log(player);
     if (player) setPlayerId(JSON.parse(player));
-    const playerLocal = localStorage.getItem("localId");
-    if (playerLocal) setLocalId(JSON.parse(playerLocal));
   }, []);
 
-  useEffect(() => {
-    socket.on("error", (args) => {
-      setError(args);
-    });
-  }, [error]);
   return (
     <>
       {playerId && (

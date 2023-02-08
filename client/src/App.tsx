@@ -15,6 +15,7 @@ function App({ socket }: { socket: Socket }) {
 
     return () => {
       socket.close();
+     
     };
   }, [setSocket]);
 

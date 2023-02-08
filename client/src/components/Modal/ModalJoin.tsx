@@ -46,7 +46,6 @@ const ModalJoinGame = ({
 
   useEffect(() => {
     socket.on("error", (args) => {
-      console.log(error)
       setError(args);
     });
   }, [error]);

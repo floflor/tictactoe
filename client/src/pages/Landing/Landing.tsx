@@ -36,6 +36,8 @@ const Landing = ({ socket }: { socket: Socket }) => {
           color="white"
           width="60%"
           justifyContent="space-around"
+          border="2px solid white"
+          heigth="10vh"
         >
           <Button onClick={(e) => handleOpenModal(e, "start")}>
             Start Game
