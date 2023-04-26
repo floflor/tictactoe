@@ -3,6 +3,7 @@ import Board from "../../components/Board/Board";
 import { Socket } from "socket.io-client";
 import {
   BoardContainer,
+  Button,
   FlexContainer,
   GridLayer,
   Heading,
@@ -11,10 +12,13 @@ import {
 } from "../../components/styled-elements";
 import Logs from "../../components/Logs/Logs";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Game = ({ socket }: { socket: Socket }) => {
   const [gameFinished, setGameFinished] = useState(false);
   const [winner, setWinner] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     socket.on("game-finished", (args) => {
@@ -48,6 +52,7 @@ const Game = ({ socket }: { socket: Socket }) => {
             <Text>Winner: {winner === "local" ? "Player Two" : winner}!</Text>
           )}
           <Text>No more moves</Text>
+          <Button onClick={()=>navigate("/")}>Return Home!</Button>
         </FlexContainer>
       )}
     </>
