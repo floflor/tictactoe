@@ -1,5 +1,5 @@
 export type Board = {
-  position: number;
-  player: number;
-  symbol: string;
+  position?: number;
+  player?: string;
+  symbol?: string;
 };

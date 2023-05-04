@@ -20,9 +20,9 @@ const BoardCell = ({
   children,
 }: {
   socket: Socket;
-  state: { position: number; player: number | null }[];
-  gameId: number;
-  playerId: number;
+  state: { position: number; player: string | null }[];
+  gameId?: string;
+  playerId: string;
   iKey: number;
   children: any;
 }) => {

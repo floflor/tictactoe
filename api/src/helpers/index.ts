@@ -7,7 +7,7 @@ export const checkPosition = (board: Board[], position: number) => {
   return isPositionFree ? false : true;
 };
 //player can move ?
-export const checkLastMove = (board: Board[], symbol: string) => {
+export const checkLastMove = (board: Board[], symbol?: string) => {
   const lastMove = board[board.length - 1];
 
   return lastMove && lastMove.symbol === symbol ? false : true;
@@ -15,9 +15,10 @@ export const checkLastMove = (board: Board[], symbol: string) => {
 
 export const isGameFinished = (board: Board[]) => {
   const positions = board.reduce((acc, move) => {
-    acc[move.position] = move.player;
+    const pos = move.position ? move.position : 0;
+    acc[pos] = move.player;
     return acc;
-  }, {} as { [key: number]: number | string });
+  }, {} as { [key: number]: string | undefined });
 
   return (
     WINNING_CONDITIONS.some(

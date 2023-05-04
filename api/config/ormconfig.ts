@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const connectDB = new DataSource({
+const connectDB2 = new DataSource({
   type: "postgres",
   host: process.env.DB_HOST,
   port: process.env.DB_PORT ? parseInt(process.env.DB_PORT, 10) : 5432,
@@ -16,7 +16,7 @@ const connectDB = new DataSource({
   migrations: ['./migrations/**/*.ts'],
 });
 
-connectDB
+connectDB2
   .initialize()
   .then(() => {
     console.log(`Data Source has been initialized`);
@@ -25,4 +25,4 @@ connectDB
     console.error(`Data Source initialization error`, err);
   });
 
-export default connectDB;
+export default connectDB2;

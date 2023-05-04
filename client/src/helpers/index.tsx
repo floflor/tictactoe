@@ -37,7 +37,7 @@ export const checkIfjustOneMove = (board: any) => {
   return times === 1 ? true : false;
 };
 
-export const checkIfSamePlayer = (board: any, playerId: number) => {
+export const checkIfSamePlayer = (board: any, playerId: string) => {
   const match = board.find((item: UpdatedBoardCells) => item.player === playerId);
   return match ? true : false;
 };

@@ -12,14 +12,16 @@ import { BoardTable } from "../styled-elements";
 const Board = ({ socket }: { socket: Socket }) => {
   const [board, setBoard] = useState<UpdatedBoard>([]);
   const { id } = useParams();
-  const gameId = parseInt(id as string);
-  const [playerId, setPlayerId] = useState<number>();
-  const [localId, setLocalId] = useState<number>();
+
+  const gameId = id;
+  const [playerId, setPlayerId] = useState<string>();
+  const [localId, setLocalId] = useState<string>();
   const [lastMove, setLastMove] = useState("");
 
   useEffect(() => {
     try {
       const positions = generateInitialBoard();
+
       socket.emit("get-board", gameId);
       socket.on("game-board", (newBoard: BoardType) => {
         if (!newBoard.length) {
@@ -45,7 +47,7 @@ const Board = ({ socket }: { socket: Socket }) => {
 
   useEffect(() => {
     const player = localStorage.getItem("playerId");
-    console.log(player);
+
     if (player) setPlayerId(JSON.parse(player));
   }, []);
 
@@ -61,7 +63,7 @@ const Board = ({ socket }: { socket: Socket }) => {
               key={boards.position}
               gameId={gameId}
               playerId={
-                lastMove === "X" && localId ? (localId as number) : playerId
+                lastMove === "X" && localId ? localId  : playerId
               }
             >
               {boards.symbol === "X" && <XSymbol />}
