@@ -1,5 +1,4 @@
 import { WINNING_CONDITIONS } from "../constants";
-import User from "../entities/UserEntity";
 import { Board } from "../types";
 
 export const checkPosition = (board: Board[], position: number) => {
