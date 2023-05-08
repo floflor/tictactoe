@@ -68,7 +68,7 @@ const ModalJoinGame = ({
           margin="0"
           placeholder="Game ID"
           onChange={(e) => handleGameIdChange(e)}
-          type="number"
+          type="string"
         />
         <Input
           placeholder="User Name"

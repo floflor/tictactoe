@@ -1,5 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Socket } from "socket.io-client";
 import { generateInitialBoard, updateBoard } from "../../helpers";
@@ -11,43 +10,52 @@ import { BoardTable } from "../styled-elements";
 
 const Board = ({ socket }: { socket: Socket }) => {
   const [board, setBoard] = useState<UpdatedBoard>([]);
-  const { id } = useParams();
-
-  const gameId = id;
+  const { id: gameId } = useParams();
   const [playerId, setPlayerId] = useState<string>();
   const [localId, setLocalId] = useState<string>();
   const [lastMove, setLastMove] = useState("");
 
-  useEffect(() => {
-    try {
-      const positions = generateInitialBoard();
-
-      socket.emit("get-board", gameId);
-      socket.on("game-board", (newBoard: BoardType) => {
-        if (!newBoard.length) {
-          setBoard(positions);
-        } else {
-          setBoard(updateBoard(positions, newBoard));
-        }
-      });
-      socket.on("move-made", (newBoard: BoardType) => {
-        setLastMove(newBoard[newBoard.length - 1].symbol);
+  const initializeBoard = useCallback(() => {
+    const positions = generateInitialBoard();
+    socket.emit("get-board", gameId);
+    socket.on("game-board", (newBoard: BoardType) => {
+      if (!newBoard.length) {
+        setBoard(positions);
+      } else {
         setBoard(updateBoard(positions, newBoard));
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  }, []);
-  useEffect(() => {
+      }
+    });
+  }, [gameId, socket]);
+
+  const handleMoveMade = useCallback(() => {
+    socket.on("move-made", (newBoard: BoardType) => {
+      setLastMove(newBoard[newBoard.length - 1].symbol);
+      setBoard((prevState) => updateBoard(prevState, newBoard));
+    });
+  }, [socket]);
+
+  const handleLocalPlayerJoined = useCallback(() => {
     socket.on("local-player-joined", (_, playerId) => {
       localStorage.setItem("localId", playerId);
       setLocalId(playerId);
     });
-  }, [localId]);
+  }, [socket]);
+
+  useEffect(() => {
+    try {
+      initializeBoard();
+      handleMoveMade();
+    } catch (err) {
+      console.log(err);
+    }
+  }, [initializeBoard, handleMoveMade]);
+
+  useEffect(() => {
+    handleLocalPlayerJoined();
+  }, [handleLocalPlayerJoined]);
 
   useEffect(() => {
     const player = localStorage.getItem("playerId");
-
     if (player) setPlayerId(JSON.parse(player));
   }, []);
 
@@ -55,19 +63,19 @@ const Board = ({ socket }: { socket: Socket }) => {
     <>
       {playerId && (
         <BoardTable>
-          {board.map((boards: UpdatedBoardCells) => (
+          {board.map((cell: UpdatedBoardCells) => (
             <BoardCell
               socket={socket}
               state={board}
-              iKey={boards.position}
-              key={boards.position}
+              iKey={cell.position}
+              key={cell.position}
               gameId={gameId}
               playerId={
                 lastMove === "X" && localId ? localId  : playerId
               }
             >
-              {boards.symbol === "X" && <XSymbol />}
-              {boards.symbol === "O" && <OSymbol />}
+              {cell.symbol === "X" && <XSymbol />}
+              {cell.symbol === "O" && <OSymbol />}
             </BoardCell>
           ))}
         </BoardTable>
