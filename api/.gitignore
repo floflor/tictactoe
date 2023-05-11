@@ -22,3 +22,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# firebase
+tictactoeauth-c1f2f-firebase-adminsdk-fmyfp-9e34675b12.json
