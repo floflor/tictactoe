@@ -10,16 +10,20 @@ import {
 } from "../controllers/gameControllers";
 
 export default (io: Server, socket: Socket) => {
-  socket.on("start-game", async (playerName: string) => {
-    try {
-      const { gameId, userId } = await startGame(playerName);
-      socket.join(gameId.toString());
-      console.log(`Connected to rooms: ${gameId}`);
-      socket.emit("game-started", gameId, userId);
-    } catch (error) {
-      handleError(socket, error);
+  socket.on(
+    "start-game",
+    async (email: string) => {
+      try {
+        const { gameId, userId } = await startGame(email);
+        
+        socket.join(gameId.toString());
+        console.log(`Connected to rooms: ${gameId}`);
+        socket.emit("game-started", gameId, userId);
+      } catch (error) {
+        handleError(socket, error);
+      }
     }
-  });
+  );
 
   socket.on("get-board", async (gameId: Types.ObjectId) => {
     try {
@@ -67,9 +71,9 @@ export default (io: Server, socket: Socket) => {
     }
   );
 
-  socket.on("join-game", async (gameId: Types.ObjectId, playerName: string) => {
+  socket.on("join-game", async (gameId: Types.ObjectId, email: string) => {
     try {
-      const userId = await joinGame(gameId, playerName);
+      const userId = await joinGame(gameId, email);
       socket.join(gameId.toString());
       io.to(gameId.toString()).emit("player-joined", gameId, userId);
     } catch (error) {

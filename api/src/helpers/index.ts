@@ -1,5 +1,6 @@
 import { WINNING_CONDITIONS } from "../constants";
 import { Board } from "../types";
+import bcrypt from 'bcrypt';
 
 export const checkPosition = (board: Board[], position: number) => {
   const isPositionFree = board.find((pos) => pos.position === position);
@@ -28,3 +29,13 @@ export const isGameFinished = (board: Board[]) => {
     ) || board.length === 9
   );
 };
+
+export const hashPassword = async (password: string) => {
+  const saltRounds = 10;
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+  return hashedPassword;
+};
+
+export const verifyToken = (dbToken: string, currentToken: string)=>{
+
+}

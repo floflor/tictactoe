@@ -4,18 +4,9 @@ import Game from "../../models/Game";
 import User from "../../models/User";
 import { checkLastMove, checkPosition, isGameFinished } from "../helpers";
 
-const validateStartGameInput = (playerName: string) => {
-  if (!playerName) {
-    throw new Error("You need to provide a user name before starting");
-  }
-};
-
-const validateJoinGameInput = (gameId: Types.ObjectId, playerName: string) => {
+const validateJoinGameInput = (gameId: Types.ObjectId) => {
   if (!gameId) {
     throw new Error("You need to provide a game ID before starting");
-  }
-  if (!playerName) {
-    throw new Error("You need to provide a user name before starting");
   }
 };
 
@@ -32,29 +23,27 @@ const validateMoveInput = (
   }
 };
 
-export const startGame = async (playerName: string) => {
-  validateStartGameInput(playerName);
+export const startGame = async (email: string) => {
+  const user = await User.findOne({ email: email });
 
-  const user = new User();
-  user.symbol = "X";
-  user.name = playerName;
-
-  const savedUser = await user.save();
-  const userId = savedUser._id;
+  if (!user) {
+    throw new Error("User not found.");
+  }
 
   const game = new Game();
-  game.players = [userId as unknown as string];
+  game.players = [user._id as unknown as string];
   game.board = [];
   game.finished = false;
 
   const savedGame = await game.save();
-  const gameId = savedGame._id;
+  const newGameId = savedGame._id;
 
-  user.game = gameId;
+  user.games.push(game._id);  
   await user.save();
 
-  return { gameId, userId };
+  return { gameId: newGameId, userId: user._id };
 };
+
 
 export const getBoard = async (gameId: Types.ObjectId) => {
   const game = await Game.findOne({ _id: gameId });
@@ -84,11 +73,10 @@ export const joinLocalGame = async (gameId: Types.ObjectId) => {
   const user = new User();
 
   user.name = "local";
-  user.game = gameId;
   user.symbol = "O";
+  user.games.push(game._id);  
   const savedUser = await user.save();
   const userId = savedUser._id;
-
   game.players.push(userId as unknown as string);
 
   await game.save();
@@ -152,8 +140,8 @@ export const makeMove = async (
   return { updatedBoard: game.board, gameFinished, winner };
 };
 
-export const joinGame = async (gameId: Types.ObjectId, playerName: string) => {
-  validateJoinGameInput(gameId, playerName);
+export const joinGame = async (gameId: Types.ObjectId, email: string) => {
+  validateJoinGameInput(gameId);
 
   const game = await Game.findOne({ _id: gameId });
 
@@ -165,10 +153,13 @@ export const joinGame = async (gameId: Types.ObjectId, playerName: string) => {
     throw new Error("The game is already full");
   }
 
-  const user = new User();
+  const user = await User.findOne({ email: email });
 
-  user.name = playerName;
-  user.game = gameId;
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  user.games.push(game._id);  
   user.symbol = "O";
   const savedUser = await user.save();
   const userId = savedUser._id;
