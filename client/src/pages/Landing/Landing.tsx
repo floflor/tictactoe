@@ -7,22 +7,57 @@ import {
 import ModalStart from "../../components/Modal/ModalStart";
 import ModalJoin from "../../components/Modal/ModalJoin";
 import { Socket } from "socket.io-client";
+import ModalLogin from "../../components/Modal/ModalLogin";
+import ModalSignup from "../../components/Modal/ModalSignup";
+import { useNavigate } from "react-router-dom";
 
 const Landing = ({ socket }: { socket: Socket }) => {
-  console.log(socket);
-  const [modal, setModal] = useState({ start: false, join: false });
+  const [email, setEmail] = useState("");
+
+  const [modal, setModal] = useState({
+    join: false,
+    login: false,
+    signup: false,
+  });
+
+  const [gameId, setGameId] = useState<number>();
+  const [playerId, setPlayerId] = useState<number>();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const lsEmail = localStorage.getItem("email");
+    if (lsEmail) {
+      setEmail(lsEmail);
+    }
+    if (gameId && playerId) {
+      navigate(`/game/${gameId}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [email, modal, gameId]);
 
   const handleOpenModal = (event: React.MouseEvent, modalType: string) => {
     event.preventDefault();
-    if (modalType === "start") {
-      setModal({ ...modal, start: true });
-    }
     if (modalType === "join") {
       setModal({ ...modal, join: true });
     }
+    if (modalType === "login") {
+      setModal({ ...modal, login: true });
+    }
+    if (modalType === "signup") {
+      setModal({ ...modal, signup: true });
+    }
+  };
+  const handleStartGame = (e: React.MouseEvent) => {
+    e.preventDefault();
+    socket.emit("start-game", email);
+    socket.on("game-started", (gameId, userId) => {
+      setGameId(gameId);
+      setPlayerId(userId);
+      localStorage.setItem("gameId", JSON.stringify(gameId));
+      localStorage.setItem("playerId", JSON.stringify(userId));
+    });
   };
 
-  useEffect(() => {}, [modal.start]);
   return (
     <FlexContainer
       minHeight="100vh"
@@ -39,18 +74,30 @@ const Landing = ({ socket }: { socket: Socket }) => {
           border="2px solid white"
           heigth="10vh"
         >
-          <Button onClick={(e) => handleOpenModal(e, "start")}>
-            Start Game
-          </Button>
-          <Button onClick={(e) => handleOpenModal(e, "join")}>Join Game</Button>
+          {email ? (
+            <>
+              <Button onClick={(e) => handleStartGame(e)}>Start Game</Button>
+              <Button onClick={(e) => handleOpenModal(e, "join")}>
+                Join Game
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button onClick={(e) => handleOpenModal(e, "login")}>
+                Login
+              </Button>
+              <Button onClick={(e) => handleOpenModal(e, "signup")}>
+                Sign Up
+              </Button>
+            </>
+          )}
         </FlexContainer>
       </FlexContainer>
-      {modal.start && (
-        <ModalStart socket={socket} child={modal} onClose={setModal} />
-      )}
       {modal.join && (
         <ModalJoin socket={socket} child={modal} onClose={setModal} />
       )}
+      {modal.login && <ModalLogin child={modal} onClose={setModal} />}
+      {modal.signup && <ModalSignup child={modal} onClose={setModal} />}
     </FlexContainer>
   );
 };

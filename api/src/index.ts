@@ -7,6 +7,7 @@ import * as admin from "firebase-admin";
 import serviceAccount from "./../tictactoeauth-c1f2f-firebase-adminsdk-fmyfp-9e34675b12.json";
 import authRoutes from "./authRoutes";
 import bodyParser from "body-parser";
+import cors from "cors";
 
 const serviceAccountCredentials = serviceAccount as admin.ServiceAccount;
 
@@ -14,6 +15,7 @@ const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
 
 connectDB();
 

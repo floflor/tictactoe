@@ -70,9 +70,7 @@ const Board = ({ socket }: { socket: Socket }) => {
               iKey={cell.position}
               key={cell.position}
               gameId={gameId}
-              playerId={
-                lastMove === "X" && localId ? localId  : playerId
-              }
+              playerId={lastMove === "X" && localId ? localId : playerId}
             >
               {cell.symbol === "X" && <XSymbol />}
               {cell.symbol === "O" && <OSymbol />}

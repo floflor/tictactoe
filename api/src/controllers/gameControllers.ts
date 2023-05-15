@@ -37,13 +37,12 @@ export const startGame = async (email: string) => {
 
   const savedGame = await game.save();
   const newGameId = savedGame._id;
-
-  user.games.push(game._id);  
+  user.symbol = "X";
+  user.games.push(game._id);
   await user.save();
 
   return { gameId: newGameId, userId: user._id };
 };
-
 
 export const getBoard = async (gameId: Types.ObjectId) => {
   const game = await Game.findOne({ _id: gameId });
@@ -74,7 +73,7 @@ export const joinLocalGame = async (gameId: Types.ObjectId) => {
 
   user.name = "local";
   user.symbol = "O";
-  user.games.push(game._id);  
+  user.games.push(game._id);
   const savedUser = await user.save();
   const userId = savedUser._id;
   game.players.push(userId as unknown as string);
@@ -159,7 +158,7 @@ export const joinGame = async (gameId: Types.ObjectId, email: string) => {
     throw new Error("User not found");
   }
 
-  user.games.push(game._id);  
+  user.games.push(game._id);
   user.symbol = "O";
   const savedUser = await user.save();
   const userId = savedUser._id;
