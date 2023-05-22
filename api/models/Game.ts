@@ -1,4 +1,5 @@
-import mongoose, { Schema } from "mongoose";
+import { ObjectId } from "mongodb";
+import mongoose, { Schema, Types } from "mongoose";
 const gameSchema = new mongoose.Schema({
 
   board: {
@@ -12,7 +13,7 @@ const gameSchema = new mongoose.Schema({
     required: true,
   },
   finished: { type: Boolean, required: true },
-  players: { type: [String], required: true },
+  players: { type: [mongoose.Schema.Types.ObjectId], required: true },
 });
 
 const Game = mongoose.model("Game", gameSchema);

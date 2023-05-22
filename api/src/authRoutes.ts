@@ -1,13 +1,13 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
-import admin from "firebase-admin";
+import admin from "firebase-admin"; 
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User";
 
 const router = express.Router();
-
-import dotenv from "dotenv";
-dotenv.config();
 
 const secret = process.env.SECRET_KEY || "TEST";
 

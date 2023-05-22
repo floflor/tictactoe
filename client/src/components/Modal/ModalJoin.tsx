@@ -70,11 +70,6 @@ const ModalJoinGame = ({
           onChange={(e) => handleGameIdChange(e)}
           type="string"
         />
-        <Input
-          placeholder="User Name"
-          onChange={(e) => handleUserNameChange(e)}
-          type="text"
-        />
         <FlexContainer
           flexDirection="row"
           justifyContent="space-between"

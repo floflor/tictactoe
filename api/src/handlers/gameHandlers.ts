@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import { Server, Socket } from "socket.io";
 import { Types } from "mongoose";
 import {
@@ -8,50 +11,45 @@ import {
   joinGame,
   getGameStatus,
 } from "../controllers/gameControllers";
+import handleEvent from "../middlewares/errorHandling";
 
 export default (io: Server, socket: Socket) => {
   socket.on(
     "start-game",
-    async (email: string) => {
-      try {
-        const { gameId, userId } = await startGame(email);
-        
-        socket.join(gameId.toString());
-        console.log(`Connected to rooms: ${gameId}`);
-        socket.emit("game-started", gameId, userId);
-      } catch (error) {
-        handleError(socket, error);
-      }
-    }
+    handleEvent(socket, async (email: string) => {
+      const { gameId, userId } = await startGame(email);
+      socket.join(gameId.toString());
+      console.log(`Connected to rooms: ${gameId}`);
+      socket.emit("game-started", gameId, userId);
+    })
   );
 
-  socket.on("get-board", async (gameId: Types.ObjectId) => {
-    try {
+  socket.on(
+    "get-board",
+    handleEvent(socket, async (gameId: Types.ObjectId) => {
       const board = await getBoard(gameId);
       socket.emit("game-board", board);
-    } catch (error) {
-      handleError(socket, error);
-    }
-  });
+    })
+  );
 
-  socket.on("join-local", async (inputGameId: Types.ObjectId) => {
-    try {
+  socket.on(
+    "join-local",
+    handleEvent(socket, async (inputGameId: Types.ObjectId) => {
       const { gameId, userId } = await joinLocalGame(inputGameId);
       socket.join(gameId.toString());
       io.to(gameId.toString()).emit("local-player-joined", gameId, userId);
-    } catch (error) {
-      handleError(socket, error);
-    }
-  });
+    })
+  );
 
   socket.on(
     "make-move",
-    async (
-      gameId: Types.ObjectId,
-      player: Types.ObjectId,
-      position: number
-    ) => {
-      try {
+    handleEvent(
+      socket,
+      async (
+        gameId: Types.ObjectId,
+        player: Types.ObjectId,
+        position: number
+      ) => {
         const { updatedBoard, gameFinished, winner } = await makeMove(
           gameId,
           player,
@@ -65,33 +63,24 @@ export default (io: Server, socket: Socket) => {
             winner || "No more moves"
           );
         }
-      } catch (error) {
-        handleError(socket, error);
       }
-    }
+    )
   );
 
-  socket.on("join-game", async (gameId: Types.ObjectId, email: string) => {
-    try {
+  socket.on(
+    "join-game",
+    handleEvent(socket, async (gameId: Types.ObjectId, email: string) => {
       const userId = await joinGame(gameId, email);
       socket.join(gameId.toString());
       io.to(gameId.toString()).emit("player-joined", gameId, userId);
-    } catch (error) {
-      handleError(socket, error);
-    }
-  });
+    })
+  );
 
-  socket.on("game-status", async (gameId: Types.ObjectId) => {
-    try {
+  socket.on(
+    "game-status",
+    handleEvent(socket, async (gameId: Types.ObjectId) => {
       const gameFinished = await getGameStatus(gameId);
       socket.emit("game-info", gameFinished);
-    } catch (error) {
-      handleError(socket, error);
-    }
-  });
-
-  const handleError = (socket: Socket, error: any) => {
-    console.error(error);
-    socket.emit("error", error.message);
-  };
+    })
+  );
 };
