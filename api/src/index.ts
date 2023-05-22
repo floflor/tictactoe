@@ -26,7 +26,21 @@ admin.initializeApp({
 app.use("/auth", authRoutes);
 
 const httpServer = createServer(app);
-const io = new Server(httpServer, { cors: { origin: "*" } });
+const io = new Server(httpServer, {
+  cors: {
+    origin: (origin, callback) => {
+      if (
+        origin === process.env.URL ||
+        origin?.startsWith("http://localhost:") ||
+        !origin
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error("Acceso no permitido por CORS"));
+      }
+    }
+  },
+});
 const onConnection = (socket: Socket) => {
   gameHandlers(io, socket);
 };
