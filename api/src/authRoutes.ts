@@ -2,10 +2,11 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import express from "express";
-import admin from "firebase-admin"; 
+import admin from "firebase-admin";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User";
+import { hashPassword } from "./helpers";
 
 const router = express.Router();
 
@@ -28,13 +29,7 @@ router.post("/signup", async (req, res) => {
     });
     await user.save();
 
-    const token = jwt.sign({ userId: user._id }, secret);
-    const tokenExpiration = new Date();
-    tokenExpiration.setHours(tokenExpiration.getHours() + 24);
-
-    user.token = token;
-    user.tokenExpiration = tokenExpiration;
-    await user.save();
+    const token = jwt.sign({ userEmail: user.email }, secret);
 
     res.json({ token });
   } catch (error: any) {
@@ -57,12 +52,6 @@ router.post("/login", async (req, res) => {
     }
 
     const token = jwt.sign({ userId: user._id }, secret);
-    const tokenExpiration = new Date();
-    tokenExpiration.setHours(tokenExpiration.getHours() + 24);
-
-    user.token = token;
-    user.tokenExpiration = tokenExpiration;
-    await user.save();
 
     res.json({ token });
   } catch (error: any) {

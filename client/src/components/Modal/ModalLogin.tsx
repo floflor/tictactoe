@@ -27,8 +27,14 @@ const ModalLogin = ({ child, onClose }: { child: any; onClose: any }) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:3001/auth/login", { email, password });
+      const result = await axios.post("http://localhost:3001/auth/login", {
+        email,
+        password,
+      });
+
       localStorage.setItem("email", email);
+      localStorage.setItem("token", result.data.token);
+
       onClose({ ...child, login: !child.login });
     } catch (e: any) {
       setError(e.message);

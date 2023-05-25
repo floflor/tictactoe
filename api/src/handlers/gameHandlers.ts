@@ -12,11 +12,17 @@ import {
   getGameStatus,
 } from "../controllers/gameControllers";
 import handleEvent from "../middlewares/errorHandling";
+import jwt from "jsonwebtoken";
+import User from "../../models/User";
+import { verifyToken } from "../helpers";
+const secret = process.env.SECRET_KEY || "TEST";
 
 export default (io: Server, socket: Socket) => {
   socket.on(
     "start-game",
-    handleEvent(socket, async (email: string) => {
+    handleEvent(socket, async (token: string, email: string) => {
+      const payload = jwt.verify(token, secret) as { userEmail: string };
+      verifyToken(payload.userEmail, email);
       const { gameId, userId } = await startGame(email);
       socket.join(gameId.toString());
       console.log(`Connected to rooms: ${gameId}`);
@@ -69,11 +75,16 @@ export default (io: Server, socket: Socket) => {
 
   socket.on(
     "join-game",
-    handleEvent(socket, async (gameId: Types.ObjectId, email: string) => {
-      const userId = await joinGame(gameId, email);
-      socket.join(gameId.toString());
-      io.to(gameId.toString()).emit("player-joined", gameId, userId);
-    })
+    handleEvent(
+      socket,
+      async (token: string, gameId: Types.ObjectId, email: string) => {
+        const payload = jwt.verify(token, secret) as { userEmail: string };
+        verifyToken(payload.userEmail, email);
+        const userId = await joinGame(gameId, email);
+        socket.join(gameId.toString());
+        io.to(gameId.toString()).emit("player-joined", gameId, userId);
+      }
+    )
   );
 
   socket.on(

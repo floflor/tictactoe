@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+
 import { useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
 import { FlexContainer, Heading, Line, Text } from "../styled-elements";

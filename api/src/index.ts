@@ -36,7 +36,7 @@ const io = new Server(httpServer, {
       ) {
         callback(null, true);
       } else {
-        callback(new Error("Acceso no permitido por CORS"));
+        callback(new Error("CORS denied permission"));
       }
     }
   },

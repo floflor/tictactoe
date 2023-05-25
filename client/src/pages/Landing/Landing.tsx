@@ -19,9 +19,10 @@ const Landing = ({ socket }: { socket: Socket }) => {
     login: false,
     signup: false,
   });
-
+  const [error, setError] = useState(false);
   const [gameId, setGameId] = useState<number>();
   const [playerId, setPlayerId] = useState<number>();
+  const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,7 +33,6 @@ const Landing = ({ socket }: { socket: Socket }) => {
     if (gameId && playerId) {
       navigate(`/game/${gameId}`);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [email, modal, gameId]);
 
   const handleOpenModal = (event: React.MouseEvent, modalType: string) => {
@@ -49,15 +49,20 @@ const Landing = ({ socket }: { socket: Socket }) => {
   };
   const handleStartGame = (e: React.MouseEvent) => {
     e.preventDefault();
-    socket.emit("start-game", email);
+    socket.emit("start-game", token, email);
     socket.on("game-started", (gameId, userId) => {
       setGameId(gameId);
       setPlayerId(userId);
       localStorage.setItem("gameId", JSON.stringify(gameId));
       localStorage.setItem("playerId", JSON.stringify(userId));
     });
+    socket.on("error", (args) => {
+      if (args === "Invalid token") {
+        setError(true);
+      }
+    });
   };
-
+  useEffect(() => {}, [error]);
   return (
     <FlexContainer
       minHeight="100vh"
@@ -74,7 +79,7 @@ const Landing = ({ socket }: { socket: Socket }) => {
           border="2px solid white"
           heigth="10vh"
         >
-          {email ? (
+          {email && !error ? (
             <>
               <Button onClick={(e) => handleStartGame(e)}>Start Game</Button>
               <Button onClick={(e) => handleOpenModal(e, "join")}>

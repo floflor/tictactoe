@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Socket } from "socket.io-client";
@@ -24,6 +23,7 @@ const ModalJoinGame = ({
   const [playerId, setPlayerId] = useState<number>();
   const [gameId, setGameId] = useState("");
   const [error, setError] = useState("");
+  const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
   const handleUserNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,7 +38,8 @@ const ModalJoinGame = ({
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    socket.emit("join-game", gameId, userName);
+
+    socket.emit("join-game", token, gameId, userName);
     socket.on("player-joined", (_, userId) => {
       setPlayerId(userId);
     });

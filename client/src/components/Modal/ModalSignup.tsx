@@ -33,12 +33,14 @@ const ModalSignup = ({ child, onClose }: { child: any; onClose: any }) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:3001/auth/signup", {
+      const result = await axios.post("http://localhost:3001/auth/signup", {
         email,
         password,
         name,
       });
       localStorage.setItem("email", email);
+      localStorage.setItem("token", result.data.token);
+
       onClose({ ...child, signup: !child.signup });
     } catch (e: any) {
       setError(e.message);

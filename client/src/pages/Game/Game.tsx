@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+
 import Board from "../../components/Board/Board";
 import { Socket } from "socket.io-client";
 import {

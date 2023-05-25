@@ -1,6 +1,6 @@
 import { WINNING_CONDITIONS } from "../constants";
 import { Board } from "../types";
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 
 export const checkPosition = (board: Board[], position: number) => {
   const isPositionFree = board.find((pos) => pos.position === position);
@@ -36,6 +36,9 @@ export const hashPassword = async (password: string) => {
   return hashedPassword;
 };
 
-export const verifyToken = (dbToken: string, currentToken: string)=>{
-
-}
+export const verifyToken = (token: string, email: string) => {
+  if (token !== email) {
+    throw new Error("Invalid token");
+  }
+  return;
+};
